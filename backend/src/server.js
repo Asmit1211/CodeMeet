@@ -1,4 +1,4 @@
-import 'dotenv/config'; 
+import "dotenv/config";
 import express from "express";
 import path from "path";
 import cors from "cors";
@@ -26,10 +26,12 @@ app.use(cors({ origin: ENV.CLIENT_URL, credentials: true }));
 app.use("/api/execute", executeRoutes);
 
 // ✅ Fixed Clerk Middleware: Passing trimmed keys explicitly
-app.use(clerkMiddleware({
-  publishableKey: ENV.CLERK_PUBLISHABLE_KEY?.trim(),
-  secretKey: ENV.CLERK_SECRET_KEY?.trim(),
-}));
+app.use(
+  clerkMiddleware({
+    publishableKey: ENV.CLERK_PUBLISHABLE_KEY?.trim(),
+    secretKey: ENV.CLERK_SECRET_KEY?.trim(),
+  }),
+);
 
 // Protected routes (auth required)
 app.use("/api/inngest", serve({ client: inngest, functions }));
@@ -45,8 +47,8 @@ app.get("/health", (req, res) => {
 // Deployment setup
 if (ENV.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+  app.get("/(.*)", (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
   });
 }
 
