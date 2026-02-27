@@ -1,34 +1,52 @@
-<h1 align="center">✨ Full-Stack Interview Platform ✨</h1>
+<h1 align="center">🎯 CodeMeet — Tech Interview Platform</h1>
+
+<p align="center">
+  <b>A full-stack MERN video calling platform built for conducting real-time technical interviews with collaborative code editing, screen sharing, and instant code execution.</b>
+</p>
 
 ![Demo App](/frontend/public/screenshot-for-readme.png)
 
-✨ Highlights:
+---
 
-- 🧑‍💻 VSCode-Powered Code Editor
-- 🔐 Authentication via Clerk
-- 🎥 1-on-1 Video Interview Rooms
-- 🧭 Dashboard with Live Stats
-- 🔊 Mic & Camera Toggle, Screen Sharing & Recording
-- 💬 Real-time Chat Messaging
-- ⚙️ Secure Code Execution in Isolated Environment
-- 🎯 Auto Feedback — Success / Fail based on test cases
-- 🎉 Confetti on Success + Notifications on Fail
-- 🧩 Practice Problems Page (solo coding mode)
-- 🔒 Room Locking — allows only 2 participants
-- 🧠 Background Jobs with Inngest (async tasks)
-- 🧰 REST API with Node.js & Express
-- ⚡ Data Fetching & Caching via TanStack Query
-- 🤖 CodeRabbit for PR Analysis & Code Optimization
-- 🧑‍💻 Git & GitHub Workflow (branches, PRs, merges)
-- 🚀 Deployment on Sevalla (free-tier friendly)
+## ✨ Features
+
+- 🎥 **1-on-1 & Group Video Calls** — Up to 4 participants per room (powered by Stream Video SDK)
+- 🖥️ **Screen Sharing** — Share your screen with all participants in real-time
+- 🧑‍💻 **Live Code Editor** — VSCode-powered collaborative editor with syntax highlighting
+- ⚙️ **Code Execution** — Secure, sandboxed execution supporting JavaScript, Python, Java, C++, Go, and Rust
+- 🎯 **Auto Feedback** — Success/Fail based on test cases with confetti on success
+- 💬 **Real-time Chat** — In-call messaging via Stream Chat SDK
+- 🔐 **Authentication** — Secure sign-in/sign-up via Clerk
+- 🧭 **Dashboard** — Live stats, active sessions, recent history, and interview tips
+- 🧩 **Practice Mode** — Solo coding problems page for interview prep
+- 🔒 **Room Controls** — Password-protected rooms with participant limits
+- 🧠 **Background Jobs** — Async task processing with Inngest
+- 📚 **Study Materials** — Premium content with Razorpay payment integration
+- 📱 **Responsive Design** — Works on desktop and mobile
 
 ---
 
-## 🧪 .env Setup
+## 🛠️ Tech Stack
 
-### Backend (`/backend`)
+| Layer | Technologies |
+|-------|-------------|
+| **Frontend** | React, Vite, Tailwind CSS, DaisyUI |
+| **Backend** | Node.js, Express.js |
+| **Database** | MongoDB (Mongoose) |
+| **Video/Chat** | Stream Video SDK, Stream Chat SDK |
+| **Auth** | Clerk |
+| **Code Execution** | JDoodle API |
+| **Payments** | Razorpay |
+| **Background Jobs** | Inngest |
+| **State Management** | TanStack Query |
 
-```bash
+---
+
+## 🧪 Environment Variables
+
+### Backend (`/backend/.env`)
+
+```env
 PORT=3000
 NODE_ENV=development
 
@@ -46,34 +64,76 @@ CLERK_SECRET_KEY=your_clerk_secret_key
 CLIENT_URL=http://localhost:5173
 ```
 
-### Frontend (`/frontend`)
+### Frontend (`/frontend/.env`)
 
-```bash
+```env
 VITE_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
-
 VITE_API_URL=http://localhost:3000/api
-
 VITE_STREAM_API_KEY=your_stream_api_key
 ```
 
 ---
 
-## 🔧 Run the Backend
+## 🚀 Getting Started
+
+### 1. Clone the repository
 
 ```bash
+git clone https://github.com/your-username/CodeMeet.git
+cd CodeMeet
+```
 
+### 2. Install dependencies & run
+
+```bash
+# Backend
 cd backend
 npm install
 npm run dev
-```
 
----
-
-## 🔧 Run the Frontend
-
-```
-bash
+# Frontend (in a new terminal)
 cd frontend
 npm install
 npm run dev
 ```
+
+### 3. Open in browser
+
+```
+http://localhost:5173
+```
+
+---
+
+## 📁 Project Structure
+
+```
+CodeMeet/
+├── backend/
+│   ├── src/
+│   │   ├── controllers/    # Route handlers
+│   │   ├── lib/            # DB, Stream, Env config
+│   │   ├── middleware/     # Auth middleware
+│   │   ├── models/         # Mongoose schemas
+│   │   ├── routes/         # API routes
+│   │   └── server.js       # Entry point
+│   └── package.json
+├── frontend/
+│   ├── src/
+│   │   ├── api/            # API client functions
+│   │   ├── components/     # Reusable UI components
+│   │   ├── hooks/          # Custom React hooks
+│   │   ├── lib/            # Utilities (Stream, Piston)
+│   │   ├── pages/          # Route pages
+│   │   ├── data/           # Problem sets
+│   │   └── App.jsx         # Root component
+│   └── package.json
+├── .gitignore
+└── README.md
+```
+
+---
+
+## 👨‍💻 Author
+
+Made with ❤️ by **Asmit**
