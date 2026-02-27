@@ -27,9 +27,9 @@ function HomePage() {
 
             <div className="flex flex-col">
               <span className="font-black text-xl bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent font-mono tracking-wider">
-                Talent IQ
+                CodeMeet
               </span>
-              <span className="text-xs text-base-content/60 font-medium -mt-1">Code Together</span>
+              <span className="text-xs text-base-content/60 font-medium -mt-1">Tech Interviews</span>
             </div>
           </Link>
 
@@ -55,7 +55,7 @@ function HomePage() {
 
             <h1 className="text-5xl lg:text-7xl font-black leading-tight">
               <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-                Code Together,
+                Tech Interviews,
               </span>
               <br />
               <span className="text-base-content">Learn Together</span>

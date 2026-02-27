@@ -65,11 +65,65 @@ class Solution {
         System.out.println(Arrays.toString(twoSum(new int[]{3, 3}, 6))); // Expected: [0, 1]
     }
 }`,
+      cpp: `#include <iostream>
+#include <vector>
+#include <unordered_map>
+using namespace std;
+
+vector<int> twoSum(vector<int>& nums, int target) {
+    // Write your solution here
+    
+    return {};
+}
+
+int main() {
+    vector<int> nums1 = {2, 7, 11, 15};
+    auto r1 = twoSum(nums1, 9);
+    cout << "[" << r1[0] << "," << r1[1] << "]" << endl; // Expected: [0,1]
+    
+    vector<int> nums2 = {3, 2, 4};
+    auto r2 = twoSum(nums2, 6);
+    cout << "[" << r2[0] << "," << r2[1] << "]" << endl; // Expected: [1,2]
+    
+    vector<int> nums3 = {3, 3};
+    auto r3 = twoSum(nums3, 6);
+    cout << "[" << r3[0] << "," << r3[1] << "]" << endl; // Expected: [0,1]
+    return 0;
+}`,
+      go: `package main
+
+import "fmt"
+
+func twoSum(nums []int, target int) []int {
+    // Write your solution here
+    
+    return nil
+}
+
+func main() {
+    fmt.Println(twoSum([]int{2, 7, 11, 15}, 9)) // Expected: [0 1]
+    fmt.Println(twoSum([]int{3, 2, 4}, 6))       // Expected: [1 2]
+    fmt.Println(twoSum([]int{3, 3}, 6))           // Expected: [0 1]
+}`,
+      rust: `fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
+    // Write your solution here
+    
+    vec![]
+}
+
+fn main() {
+    println!("{:?}", two_sum(vec![2, 7, 11, 15], 9)); // Expected: [0, 1]
+    println!("{:?}", two_sum(vec![3, 2, 4], 6));       // Expected: [1, 2]
+    println!("{:?}", two_sum(vec![3, 3], 6));           // Expected: [0, 1]
+}`,
     },
     expectedOutput: {
       javascript: "[0,1]\n[1,2]\n[0,1]",
       python: "[0, 1]\n[1, 2]\n[0, 1]",
       java: "[0, 1]\n[1, 2]\n[0, 1]",
+      cpp: "[0,1]\n[1,2]\n[0,1]",
+      go: "[0 1]\n[1 2]\n[0 1]",
+      rust: "[0, 1]\n[1, 2]\n[0, 1]",
     },
   },
 
@@ -137,11 +191,70 @@ class Solution {
         System.out.println(Arrays.toString(test2)); // Expected: [h, a, n, n, a, H]
     }
 }`,
+      cpp: `#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+void reverseString(vector<char>& s) {
+    // Write your solution here
+    
+}
+
+int main() {
+    vector<char> test1 = {'h','e','l','l','o'};
+    reverseString(test1);
+    for (char c : test1) cout << c;
+    cout << endl; // Expected: olleh
+    
+    vector<char> test2 = {'H','a','n','n','a','h'};
+    reverseString(test2);
+    for (char c : test2) cout << c;
+    cout << endl; // Expected: hannaH
+    return 0;
+}`,
+      go: `package main
+
+import "fmt"
+
+func reverseString(s []byte) {
+    // Write your solution here
+    
+}
+
+func main() {
+    test1 := []byte{'h','e','l','l','o'}
+    reverseString(test1)
+    fmt.Println(string(test1)) // Expected: olleh
+    
+    test2 := []byte{'H','a','n','n','a','h'}
+    reverseString(test2)
+    fmt.Println(string(test2)) // Expected: hannaH
+}`,
+      rust: `fn reverse_string(s: &mut Vec<char>) {
+    // Write your solution here
+    
+}
+
+fn main() {
+    let mut test1 = vec!['h','e','l','l','o'];
+    reverse_string(&mut test1);
+    let s1: String = test1.iter().collect();
+    println!("{}", s1); // Expected: olleh
+    
+    let mut test2 = vec!['H','a','n','n','a','h'];
+    reverse_string(&mut test2);
+    let s2: String = test2.iter().collect();
+    println!("{}", s2); // Expected: hannaH
+}`,
     },
     expectedOutput: {
       javascript: '["o","l","l","e","h"]\n["h","a","n","n","a","H"]',
       python: "['o', 'l', 'l', 'e', 'h']\n['h', 'a', 'n', 'n', 'a', 'H']",
       java: "[o, l, l, e, h]\n[h, a, n, n, a, H]",
+      cpp: "olleh\nhannaH",
+      go: "olleh\nhannaH",
+      rust: "olleh\nhannaH",
     },
   },
 
@@ -204,11 +317,63 @@ print(isPalindrome(" "))  # Expected: True`,
         System.out.println(isPalindrome(" ")); // Expected: true
     }
 }`,
+      cpp: `#include <iostream>
+#include <string>
+#include <cctype>
+using namespace std;
+
+bool isPalindrome(string s) {
+    // Write your solution here
+    
+    return false;
+}
+
+int main() {
+    cout << boolalpha;
+    cout << isPalindrome("A man, a plan, a canal: Panama") << endl; // Expected: true
+    cout << isPalindrome("race a car") << endl; // Expected: false
+    cout << isPalindrome(" ") << endl; // Expected: true
+    return 0;
+}`,
+      go: `package main
+
+import (
+    "fmt"
+    "strings"
+    "unicode"
+)
+
+func isPalindrome(s string) bool {
+    // Write your solution here
+    _ = strings.ToLower(s)
+    _ = unicode.IsLetter
+    return false
+}
+
+func main() {
+    fmt.Println(isPalindrome("A man, a plan, a canal: Panama")) // Expected: true
+    fmt.Println(isPalindrome("race a car"))                     // Expected: false
+    fmt.Println(isPalindrome(" "))                               // Expected: true
+}`,
+      rust: `fn is_palindrome(s: String) -> bool {
+    // Write your solution here
+    
+    false
+}
+
+fn main() {
+    println!("{}", is_palindrome("A man, a plan, a canal: Panama".to_string())); // Expected: true
+    println!("{}", is_palindrome("race a car".to_string())); // Expected: false
+    println!("{}", is_palindrome(" ".to_string())); // Expected: true
+}`,
     },
     expectedOutput: {
       javascript: "true\nfalse\ntrue",
       python: "True\nFalse\nTrue",
       java: "true\nfalse\ntrue",
+      cpp: "true\nfalse\ntrue",
+      go: "true\nfalse\ntrue",
+      rust: "true\nfalse\ntrue",
     },
   },
 
@@ -270,11 +435,62 @@ print(maxSubArray([5,4,-1,7,8]))  # Expected: 23`,
         System.out.println(maxSubArray(new int[]{5,4,-1,7,8})); // Expected: 23
     }
 }`,
+      cpp: `#include <iostream>
+#include <vector>
+#include <climits>
+using namespace std;
+
+int maxSubArray(vector<int>& nums) {
+    // Write your solution here
+    
+    return 0;
+}
+
+int main() {
+    vector<int> nums1 = {-2,1,-3,4,-1,2,1,-5,4};
+    cout << maxSubArray(nums1) << endl; // Expected: 6
+    
+    vector<int> nums2 = {1};
+    cout << maxSubArray(nums2) << endl; // Expected: 1
+    
+    vector<int> nums3 = {5,4,-1,7,8};
+    cout << maxSubArray(nums3) << endl; // Expected: 23
+    return 0;
+}`,
+      go: `package main
+
+import "fmt"
+
+func maxSubArray(nums []int) int {
+    // Write your solution here
+    
+    return 0
+}
+
+func main() {
+    fmt.Println(maxSubArray([]int{-2,1,-3,4,-1,2,1,-5,4})) // Expected: 6
+    fmt.Println(maxSubArray([]int{1}))                       // Expected: 1
+    fmt.Println(maxSubArray([]int{5,4,-1,7,8}))              // Expected: 23
+}`,
+      rust: `fn max_sub_array(nums: Vec<i32>) -> i32 {
+    // Write your solution here
+    
+    0
+}
+
+fn main() {
+    println!("{}", max_sub_array(vec![-2,1,-3,4,-1,2,1,-5,4])); // Expected: 6
+    println!("{}", max_sub_array(vec![1]));                       // Expected: 1
+    println!("{}", max_sub_array(vec![5,4,-1,7,8]));              // Expected: 23
+}`,
     },
     expectedOutput: {
       javascript: "6\n1\n23",
       python: "6\n1\n23",
       java: "6\n1\n23",
+      cpp: "6\n1\n23",
+      go: "6\n1\n23",
+      rust: "6\n1\n23",
     },
   },
 
@@ -332,11 +548,57 @@ print(maxArea([1,1]))  # Expected: 1`,
         System.out.println(maxArea(new int[]{1,1})); // Expected: 1
     }
 }`,
+      cpp: `#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int maxArea(vector<int>& height) {
+    // Write your solution here
+    
+    return 0;
+}
+
+int main() {
+    vector<int> h1 = {1,8,6,2,5,4,8,3,7};
+    cout << maxArea(h1) << endl; // Expected: 49
+    
+    vector<int> h2 = {1,1};
+    cout << maxArea(h2) << endl; // Expected: 1
+    return 0;
+}`,
+      go: `package main
+
+import "fmt"
+
+func maxArea(height []int) int {
+    // Write your solution here
+    
+    return 0
+}
+
+func main() {
+    fmt.Println(maxArea([]int{1,8,6,2,5,4,8,3,7})) // Expected: 49
+    fmt.Println(maxArea([]int{1,1}))                 // Expected: 1
+}`,
+      rust: `fn max_area(height: Vec<i32>) -> i32 {
+    // Write your solution here
+    
+    0
+}
+
+fn main() {
+    println!("{}", max_area(vec![1,8,6,2,5,4,8,3,7])); // Expected: 49
+    println!("{}", max_area(vec![1,1]));                 // Expected: 1
+}`,
     },
     expectedOutput: {
       javascript: "49\n1",
       python: "49\n1",
       java: "49\n1",
+      cpp: "49\n1",
+      go: "49\n1",
+      rust: "49\n1",
     },
   },
 };
@@ -356,5 +618,20 @@ export const LANGUAGE_CONFIG = {
     name: "Java",
     icon: "/java.png",
     monacoLang: "java",
+  },
+  cpp: {
+    name: "C++",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg",
+    monacoLang: "cpp",
+  },
+  go: {
+    name: "Go",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg",
+    monacoLang: "go",
+  },
+  rust: {
+    name: "Rust",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rust/rust-original.svg",
+    monacoLang: "rust",
   },
 };

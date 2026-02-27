@@ -1,5 +1,5 @@
 {
-  "name": "talent-iq",
+  "name": "codemeet",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -9,5 +9,12 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "baseline-browser-mapping": "^2.9.19"
+  },
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "razorpay": "^2.9.6"
+  }
 }

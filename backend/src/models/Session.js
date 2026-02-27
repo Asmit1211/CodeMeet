@@ -4,23 +4,29 @@ const sessionSchema = new mongoose.Schema(
   {
     problem: {
       type: String,
-      required: true,
     },
     difficulty: {
       type: String,
       enum: ["easy", "medium", "hard"],
-      required: true,
+    },
+    meetingId: {
+      type: String,
+      unique: true,
+    },
+    password: {
+      type: String,
     },
     host: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    participant: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      default: null,
-    },
+    participants: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     status: {
       type: String,
       enum: ["active", "completed"],

@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import Navbar from "../components/Navbar";
 
 import { PROBLEMS } from "../data/problems";
-import { ChevronRightIcon, Code2Icon } from "lucide-react";
+import { ChevronRightIcon, Code2Icon, PencilIcon } from "lucide-react";
 import { getDifficultyBadgeClass } from "../lib/utils";
 
 function ProblemsPage() {
@@ -24,6 +24,38 @@ function ProblemsPage() {
             Sharpen your coding skills with these curated problems
           </p>
         </div>
+
+        {/* CUSTOM QUESTION CARD */}
+        <Link
+          to="/problem/custom"
+          className="card bg-gradient-to-r from-secondary/10 to-accent/10 border-2 border-secondary/30 hover:border-secondary/60 hover:scale-[1.01] transition-all mb-6"
+        >
+          <div className="card-body">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="size-12 rounded-lg bg-gradient-to-br from-secondary to-accent flex items-center justify-center">
+                    <PencilIcon className="size-6 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h2 className="text-xl font-bold">Custom Question</h2>
+                      <span className="badge badge-secondary badge-outline badge-sm">NEW</span>
+                    </div>
+                    <p className="text-sm text-base-content/60">Create & Solve</p>
+                  </div>
+                </div>
+                <p className="text-base-content/80 mb-3">
+                  Create your own coding problem with a custom title, description, and input/output format — then solve it in the built-in editor.
+                </p>
+              </div>
+              <div className="flex items-center gap-2 text-secondary">
+                <span className="font-medium">Create</span>
+                <ChevronRightIcon className="size-5" />
+              </div>
+            </div>
+          </div>
+        </Link>
 
         {/* PROBLEMS LIST */}
         <div className="space-y-4">
