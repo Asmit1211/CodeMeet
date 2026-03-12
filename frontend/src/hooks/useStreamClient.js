@@ -10,18 +10,23 @@ function useStreamClient(session, loadingSession, isHost, isParticipant) {
   const [chatClient, setChatClient] = useState(null);
   const [channel, setChannel] = useState(null);
   const [isInitializingCall, setIsInitializingCall] = useState(true);
+  const [connectionError, setConnectionError] = useState(null);
 
   useEffect(() => {
     let videoCall = null;
     let chatClientInstance = null;
     let cancelled = false;
 
-    const initCall = async () => {
+    const initCall = async (attempt = 1) => {
+      const MAX_RETRIES = 3;
+
       if (!session?.callId) return;
       if (!isHost && !isParticipant) return;
       if (session.status === "completed") return;
 
       try {
+        setConnectionError(null);
+
         const { token, userId, userName, userImage } = await sessionApi.getStreamToken();
 
         if (cancelled) return;
@@ -70,8 +75,17 @@ function useStreamClient(session, loadingSession, isHost, isParticipant) {
         setChannel(chatChannel);
       } catch (error) {
         if (!cancelled) {
-          toast.error("Failed to join video call");
-          console.error("Error init call", error);
+          console.error(`Connection attempt ${attempt} failed:`, error);
+
+          if (attempt < MAX_RETRIES) {
+            const delay = Math.pow(2, attempt - 1) * 1000; // 1s, 2s, 4s
+            toast.error(`Connection failed. Retrying in ${delay / 1000}s... (${attempt}/${MAX_RETRIES})`);
+            await new Promise((r) => setTimeout(r, delay));
+            if (!cancelled) return initCall(attempt + 1);
+          } else {
+            setConnectionError("Failed to connect after multiple attempts. Please refresh the page.");
+            toast.error("Failed to join video call after 3 attempts.");
+          }
         }
       } finally {
         if (!cancelled) {
@@ -104,6 +118,7 @@ function useStreamClient(session, loadingSession, isHost, isParticipant) {
     chatClient,
     channel,
     isInitializingCall,
+    connectionError,
   };
 }
 

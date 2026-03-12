@@ -187,6 +187,12 @@ function DashboardPage() {
         onCreateRoom={handleCreateRoom}
         isCreating={createSessionMutation.isPending}
         createdSession={createdSession}
+        onJoinRoom={() => {
+          if (createdSession?.sessionId) {
+            handleCloseModal();
+            navigate(`/session/${createdSession.sessionId}`);
+          }
+        }}
       />
     </>
   );

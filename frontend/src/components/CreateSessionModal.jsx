@@ -1,4 +1,4 @@
-import { LoaderIcon, PlusIcon, CopyIcon, CheckIcon } from "lucide-react";
+import { LoaderIcon, PlusIcon, CopyIcon, CheckIcon, ArrowRightIcon } from "lucide-react";
 import { useState } from "react";
 
 function CreateSessionModal({
@@ -7,6 +7,7 @@ function CreateSessionModal({
   onCreateRoom,
   isCreating,
   createdSession,
+  onJoinRoom,
 }) {
   const [copiedField, setCopiedField] = useState(null);
 
@@ -97,8 +98,12 @@ function CreateSessionModal({
           </div>
 
           <div className="modal-action">
-            <button className="btn btn-primary" onClick={handleClose}>
+            <button className="btn btn-ghost" onClick={handleClose}>
               Done
+            </button>
+            <button className="btn btn-primary gap-2" onClick={onJoinRoom}>
+              <ArrowRightIcon className="size-4" />
+              Join Room
             </button>
           </div>
         </div>

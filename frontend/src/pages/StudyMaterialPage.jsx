@@ -13,6 +13,8 @@ import {
   Loader2Icon,
   SparklesIcon,
   StarIcon,
+  XIcon,
+  ArrowLeftIcon,
 } from "lucide-react";
 
 import Navbar from "../components/Navbar";
@@ -27,6 +29,12 @@ const STUDY_MATERIALS = [
     icon: CodeIcon,
     tag: "DSA",
     tagColor: "badge-primary",
+    notes: [
+      { title: "Arrays & Hashing", content: "Use hash maps to reduce O(n²) brute force to O(n). Common patterns: frequency counting, prefix sums, sliding window.", example: "Two Sum → Use a map to store complements. O(n) time, O(n) space." },
+      { title: "Linked Lists", content: "Master the two-pointer technique (fast/slow) for cycle detection, middle finding, and reversal.", example: "Floyd's Cycle Detection: slow.next, fast.next.next. If they meet → cycle exists." },
+      { title: "Trees & Graphs", content: "BFS (queue) for shortest path, DFS (stack/recursion) for exhaustive search. Know when to use each.", example: "Binary Tree Level Order: use BFS with a queue, process level-by-level." },
+      { title: "Dynamic Programming", content: "Identify overlapping subproblems and optimal substructure. Start with recursion → memoization → tabulation.", example: "Fibonacci: dp[i] = dp[i-1] + dp[i-2]. Classic bottom-up approach." },
+    ],
   },
   {
     id: 2,
@@ -35,6 +43,12 @@ const STUDY_MATERIALS = [
     icon: BrainCircuitIcon,
     tag: "System Design",
     tagColor: "badge-secondary",
+    notes: [
+      { title: "Load Balancing", content: "Distribute traffic across servers using Round Robin, Least Connections, or Consistent Hashing.", example: "NGINX as reverse proxy → upstream servers with health checks." },
+      { title: "Database Sharding", content: "Split data horizontally across multiple databases. Choose shard key carefully to avoid hotspots.", example: "Shard by user_id % N. Range-based for time-series data." },
+      { title: "Caching Strategies", content: "Use Redis/Memcached for read-heavy workloads. Know Cache-Aside, Write-Through, and Write-Behind patterns.", example: "Cache-Aside: Read from cache → miss → read DB → populate cache." },
+      { title: "Message Queues", content: "Kafka/RabbitMQ for async processing, decoupling services, and handling traffic spikes.", example: "Order service → publishes to queue → payment service consumes asynchronously." },
+    ],
   },
   {
     id: 3,
@@ -43,6 +57,12 @@ const STUDY_MATERIALS = [
     icon: FileTextIcon,
     tag: "Behavioral",
     tagColor: "badge-accent",
+    notes: [
+      { title: "STAR Method", content: "Structure every answer: Situation → Task → Action → Result. Keep answers under 2 minutes.", example: "S: Team missed deadline. T: I was tech lead. A: Broke tasks into sprints. R: Delivered 1 week early." },
+      { title: "Conflict Resolution", content: "Show empathy, active listening, and compromise. Never badmouth a teammate.", example: "'I scheduled a 1-on-1, listened to their concerns, proposed a middle ground that satisfied both.'" },
+      { title: "Leadership Stories", content: "Highlight initiative, mentoring, and impact. Use metrics when possible.", example: "'I mentored 2 junior devs, reducing their PR review cycle from 3 days to 1 day.'" },
+      { title: "Failure & Learning", content: "Be honest about mistakes. Focus 80% on what you learned and how you improved.", example: "'I shipped without enough testing. Added CI/CD pipeline after that — zero regressions since.'" },
+    ],
   },
   {
     id: 4,
@@ -51,6 +71,12 @@ const STUDY_MATERIALS = [
     icon: BookOpenIcon,
     tag: "JavaScript",
     tagColor: "badge-warning",
+    notes: [
+      { title: "Closures", content: "A closure is a function that remembers variables from its outer scope even after the outer function returns.", example: "function counter() { let n=0; return () => ++n; } // Each call remembers n." },
+      { title: "Event Loop", content: "Call Stack → Web APIs → Callback Queue → Microtask Queue. Microtasks (Promises) run before macrotasks (setTimeout).", example: "Promise.resolve().then(f) runs BEFORE setTimeout(f, 0)." },
+      { title: "Prototypal Inheritance", content: "Every object has a __proto__ chain. Object.create() sets up the prototype link.", example: "const dog = Object.create(animal); // dog.__proto__ === animal" },
+      { title: "Async/Await", content: "Syntactic sugar over Promises. Always wrap in try/catch. Use Promise.all() for parallel execution.", example: "const [a, b] = await Promise.all([fetchA(), fetchB()]); // Parallel, not sequential." },
+    ],
   },
   {
     id: 5,
@@ -59,6 +85,12 @@ const STUDY_MATERIALS = [
     icon: SparklesIcon,
     tag: "React",
     tagColor: "badge-info",
+    notes: [
+      { title: "Custom Hooks", content: "Extract reusable stateful logic into custom hooks. Prefix with 'use'. Return state and handlers.", example: "useDebounce(value, delay) → returns debounced value. Reuse across search inputs." },
+      { title: "useEffect Cleanup", content: "Always return a cleanup function for subscriptions, timers, and event listeners to prevent memory leaks.", example: "useEffect(() => { const id = setInterval(fn, 1000); return () => clearInterval(id); }, []);" },
+      { title: "Memoization", content: "Use React.memo for expensive components, useMemo for computed values, useCallback for stable references.", example: "const filtered = useMemo(() => items.filter(predicate), [items, predicate]);" },
+      { title: "State Management", content: "Local state (useState) → Lifted state → Context API → TanStack Query (server state) → Zustand/Redux (complex global).", example: "TanStack Query: useQuery({ queryKey: ['todos'], queryFn: fetchTodos });" },
+    ],
   },
   {
     id: 6,
@@ -67,6 +99,12 @@ const STUDY_MATERIALS = [
     icon: FileTextIcon,
     tag: "Database",
     tagColor: "badge-error",
+    notes: [
+      { title: "JOIN Types", content: "INNER = both match. LEFT = all from left + matches. RIGHT = all from right. FULL = all from both.", example: "SELECT * FROM users LEFT JOIN orders ON users.id = orders.user_id;" },
+      { title: "Indexing", content: "B-Tree indexes speed up WHERE, ORDER BY, and JOIN. Don't over-index — writes become slower.", example: "CREATE INDEX idx_email ON users(email); — Speeds up WHERE email = '...'." },
+      { title: "Normalization", content: "1NF: no repeating groups. 2NF: no partial dependencies. 3NF: no transitive dependencies.", example: "Split 'orders' table: orders → order_items → products (3NF)." },
+      { title: "Query Optimization", content: "Use EXPLAIN ANALYZE. Avoid SELECT *. Use LIMIT. Index columns in WHERE and JOIN clauses.", example: "EXPLAIN ANALYZE SELECT name FROM users WHERE email = 'x@y.com';" },
+    ],
   },
 ];
 
@@ -74,6 +112,7 @@ function StudyMaterialPage() {
   const { user } = useUser();
   const queryClient = useQueryClient();
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
+  const [selectedMaterial, setSelectedMaterial] = useState(null);
 
   // Fetch user data from our backend to check isPremium
   const { data: userData, isLoading } = useQuery({
@@ -258,7 +297,10 @@ function StudyMaterialPage() {
                       </p>
 
                       <div className="card-actions justify-end mt-4">
-                        <button className="btn btn-ghost btn-sm text-primary gap-1">
+                        <button
+                          className="btn btn-ghost btn-sm text-primary gap-1"
+                          onClick={() => setSelectedMaterial(material)}
+                        >
                           <BookOpenIcon className="w-4 h-4" />
                           Read Now
                         </button>
@@ -268,6 +310,61 @@ function StudyMaterialPage() {
                 );
               })}
             </div>
+          </div>
+        )}
+
+        {/* Notes Viewer Modal */}
+        {selectedMaterial && (
+          <div className="modal modal-open">
+            <div className="modal-box max-w-3xl max-h-[85vh]">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <button
+                    className="btn btn-ghost btn-sm btn-circle"
+                    onClick={() => setSelectedMaterial(null)}
+                  >
+                    <ArrowLeftIcon className="w-4 h-4" />
+                  </button>
+                  <div>
+                    <h3 className="font-bold text-xl">{selectedMaterial.title}</h3>
+                    <span className={`badge ${selectedMaterial.tagColor} badge-sm mt-1`}>
+                      {selectedMaterial.tag}
+                    </span>
+                  </div>
+                </div>
+                <button
+                  className="btn btn-ghost btn-sm btn-circle"
+                  onClick={() => setSelectedMaterial(null)}
+                >
+                  <XIcon className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="space-y-5 overflow-y-auto">
+                {selectedMaterial.notes.map((note, idx) => (
+                  <div key={idx} className="bg-base-200 rounded-xl p-5 border border-base-300">
+                    <h4 className="font-bold text-lg mb-2 flex items-center gap-2">
+                      <span className="badge badge-primary badge-sm">{idx + 1}</span>
+                      {note.title}
+                    </h4>
+                    <p className="text-base-content/70 text-sm leading-relaxed mb-3">
+                      {note.content}
+                    </p>
+                    <div className="bg-base-300 rounded-lg p-3">
+                      <p className="text-xs text-base-content/50 mb-1 font-semibold">Example</p>
+                      <code className="text-sm font-mono text-primary">{note.example}</code>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="modal-action">
+                <button className="btn btn-primary" onClick={() => setSelectedMaterial(null)}>
+                  Close
+                </button>
+              </div>
+            </div>
+            <div className="modal-backdrop" onClick={() => setSelectedMaterial(null)}></div>
           </div>
         )}
       </div>

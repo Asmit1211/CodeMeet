@@ -1,0 +1,182 @@
+# Security & QA Audit — Findings and Fixes
+
+Comprehensive review of the MERN interview platform covering race conditions, Stream initialization, Piston API, routing, and memory leaks.
+
+---
+
+## Findings & Proposed Fixes
+
+### 1. 🔴 Race Condition: Two users join a full room simultaneously
+
+**File:** [sessionController.js](file:///c:/Users/asmit/Desktop/SEM%206%20Project/talent-IQ/backend/src/controllers/sessionController.js#L118-L165)
+
+**Problem:** [joinSession](file:///c:/Users/asmit/Desktop/SEM%206%20Project/talent-IQ/backend/src/controllers/sessionController.js#118-166) does a read-then-write: it reads `session.participants.length`, checks `>= 2`, then pushes and saves. Two concurrent requests can both read length as 1, both pass the check, and both push — resulting in 3 participants (4 people total).
+
+**Fix:** Use MongoDB's atomic `findOneAndUpdate` with a `$where` or `$expr` condition to atomically check length AND push in a single operation.
+
+```diff
+- const session = await Session.findOne({ meetingId });
+- // ... manual checks ...
+- session.participants.push(userId);
+- await session.save();
++ const session = await Session.findOneAndUpdate(
++   {
++     meetingId,
++     status: "active",
++     host: { $ne: userId },
++     participants: { $nin: [userId] },
++     $expr: { $lt: [{ $size: "$participants" }, 2] },
++   },
++   { $addToSet: { participants: userId } },
++   { new: true }
++ );
+```
+
+We still need the separate `findOne` for password validation, but the actual push uses the atomic operation.
+
+---
+
+### 2. 🟡 Routing: Invalid session ID crashes [getSessionById](file:///c:/Users/asmit/Desktop/SEM%206%20Project/talent-IQ/backend/src/controllers/sessionController.js#101-117)
+
+**File:** [sessionController.js](file:///c:/Users/asmit/Desktop/SEM%206%20Project/talent-IQ/backend/src/controllers/sessionController.js#L101-L116)
+
+**Problem:** If a user visits `/session/invalid-id-format`, Mongoose's `findById("invalid-id-format")` throws a `CastError` because it's not a valid ObjectId. The generic `catch` returns 500, but it should return 400.
+
+**Fix:** Add an ObjectId format validation before the query.
+
+```diff
++ import mongoose from "mongoose";
+  // ... in getSessionById:
++ if (!mongoose.Types.ObjectId.isValid(id)) {
++   return res.status(400).json({ message: "Invalid session ID format" });
++ }
+```
+
+Same fix applies to [endSession](file:///c:/Users/asmit/Desktop/SEM%206%20Project/talent-IQ/backend/src/controllers/sessionController.js#167-203).
+
+---
+
+### 3. 🟡 Piston API: No 429 (rate-limit) specific handling
+
+**File:** [piston.js](file:///c:/Users/asmit/Desktop/SEM%206%20Project/talent-IQ/frontend/src/lib/piston.js#L48-L53)
+
+**Problem:** The `!response.ok` block returns a generic error message. A 429 response gives the user a confusing `HTTP error! status: 429` with no guidance.
+
+**Fix:** Add specific handling for 429.
+
+```diff
+  if (!response.ok) {
++   if (response.status === 429) {
++     return {
++       success: false,
++       error: "Rate limit exceeded. Please wait a few seconds before running code again.",
++     };
++   }
+    return {
+      success: false,
+      error: `HTTP error! status: ${response.status}`,
+    };
+  }
+```
+
+---
+
+### 4. 🟡 Stream Initialization: Stale cleanup race in [useStreamClient](file:///c:/Users/asmit/Desktop/SEM%206%20Project/talent-IQ/frontend/src/hooks/useStreamClient.js#7-90)
+
+**File:** [useStreamClient.js](file:///c:/Users/asmit/Desktop/SEM%206%20Project/talent-IQ/frontend/src/hooks/useStreamClient.js#L14-L80)
+
+**Problem:** If the `useEffect` re-fires (e.g., session refetch changes dependencies) before the async [initCall](file:///c:/Users/asmit/Desktop/SEM%206%20Project/talent-IQ/frontend/src/hooks/useStreamClient.js#18-64) completes, there's no cancellation flag. The old async call will still set state on an unmounted/re-rendered component, and the cleanup only cleans up the *local* `videoCall`/`chatClientInstance` variables — which are still `null` because init didn't finish yet.
+
+**Fix:** Add a `cancelled` flag so stale async calls don't set state.
+
+```diff
+  useEffect(() => {
+    let videoCall = null;
+    let chatClientInstance = null;
++   let cancelled = false;
+
+    const initCall = async () => {
+      // ... guards ...
+      try {
+        // ... init code ...
++       if (cancelled) return;
+        setStreamClient(client);
+        // ... more init ...
++       if (cancelled) return;
+        setCall(videoCall);
+        // ... chat init ...
++       if (cancelled) return;
+        setChatClient(chatClientInstance);
+        setChannel(chatChannel);
+      } catch (error) { ... }
+    };
+
+    return () => {
++     cancelled = true;
+      // ... existing cleanup ...
+    };
+  }, [...]);
+```
+
+---
+
+### 5. 🟢 Memory Leaks: Stream cleanup — mostly handled
+
+**File:** [useStreamClient.js](file:///c:/Users/asmit/Desktop/SEM%206%20Project/talent-IQ/frontend/src/hooks/useStreamClient.js#L67-L79)
+
+**Current status:** The cleanup IIFE properly calls `videoCall.leave()`, `chatClientInstance.disconnectUser()`, and [disconnectStreamClient()](file:///c:/Users/asmit/Desktop/SEM%206%20Project/talent-IQ/frontend/src/lib/stream.js#27-37). This is **adequate** for normal usage.
+
+**Minor concern:** The IIFE async cleanup isn't awaited by React, so if the user navigates away very fast, the promises may not finish. This is a known React limitation and is acceptable — the Stream SDK handles this gracefully.
+
+**No code change needed** — just noted for awareness.
+
+---
+
+### 6. 🟡 `meetingId` uniqueness collision on creation
+
+**File:** [sessionController.js](file:///c:/Users/asmit/Desktop/SEM%206%20Project/talent-IQ/backend/src/controllers/sessionController.js#L4-L8)
+
+**Problem:** [generateMeetingId](file:///c:/Users/asmit/Desktop/SEM%206%20Project/talent-IQ/backend/src/controllers/sessionController.js#4-9) uses `Math.random()`. If two sessions are created at the exact same time and happen to generate the same 9-digit number, the MongoDB `unique` index will throw a duplicate key error, returning a generic 500 to the user.
+
+**Fix:** Add a retry loop in [createSession](file:///c:/Users/asmit/Desktop/SEM%206%20Project/talent-IQ/frontend/src/api/sessions.js#4-8) when meeting ID collision occurs.
+
+```diff
++ let meetingId;
++ let retries = 3;
++ while (retries > 0) {
++   meetingId = generateMeetingId();
++   const exists = await Session.findOne({ meetingId });
++   if (!exists) break;
++   retries--;
++ }
++ if (retries === 0) {
++   return res.status(500).json({ message: "Failed to generate unique meeting ID, please try again" });
++ }
+```
+
+---
+
+## Summary Table
+
+| # | Area | Severity | File | Fix |
+|---|------|----------|------|-----|
+| 1 | Race Condition | 🔴 High | [sessionController.js](file:///c:/Users/asmit/Desktop/SEM%206%20Project/talent-IQ/backend/src/controllers/sessionController.js) | Atomic `findOneAndUpdate` for join |
+| 2 | Invalid Route | 🟡 Medium | [sessionController.js](file:///c:/Users/asmit/Desktop/SEM%206%20Project/talent-IQ/backend/src/controllers/sessionController.js) | Validate ObjectId format |
+| 3 | Piston 429 | 🟡 Medium | [piston.js](file:///c:/Users/asmit/Desktop/SEM%206%20Project/talent-IQ/frontend/src/lib/piston.js) | Specific rate-limit error message |
+| 4 | Stream Stale Init | 🟡 Medium | [useStreamClient.js](file:///c:/Users/asmit/Desktop/SEM%206%20Project/talent-IQ/frontend/src/hooks/useStreamClient.js) | Add `cancelled` flag |
+| 5 | Memory Leaks | 🟢 Low | [useStreamClient.js](file:///c:/Users/asmit/Desktop/SEM%206%20Project/talent-IQ/frontend/src/hooks/useStreamClient.js) | Already handled, no change |
+| 6 | Meeting ID Collision | 🟡 Medium | [sessionController.js](file:///c:/Users/asmit/Desktop/SEM%206%20Project/talent-IQ/backend/src/controllers/sessionController.js) | Retry loop for uniqueness |
+
+## Verification Plan
+
+There are no existing automated tests in this project. Verification will be manual:
+
+### Manual Verification
+1. **Race condition fix** — After applying fix #1, try joining a session that already has 2 participants. The user should see "Room is full" instead of being admitted as a 3rd participant.
+2. **Invalid route fix** — Navigate to `/session/not-a-real-id` in the browser. Should see a clean 400 error instead of a 500 crash.
+3. **Piston 429** — Rapidly click "Run Code" multiple times in quick succession. If rate-limited, the error message should say "Rate limit exceeded" instead of a raw HTTP status.
+4. **Stream stale init** — Join a session, then quickly navigate away and back. No console errors about setting state on unmounted components should appear.
+5. **Meeting ID collision** — Functional: create multiple sessions and confirm each gets a unique meetingId.
+
+> [!IMPORTANT]
+> I can apply all fixes except #5 (no change needed). Let me know if you'd like me to proceed with all of them, or if you'd like to skip any.
