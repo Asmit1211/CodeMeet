@@ -16,6 +16,7 @@ function useStreamClient(session, loadingSession, isHost, isParticipant) {
     let videoCall = null;
     let chatClientInstance = null;
     let cancelled = false;
+    let retryTimer = null;
 
     const initCall = async (attempt = 1) => {
       const MAX_RETRIES = 3;
@@ -80,7 +81,10 @@ function useStreamClient(session, loadingSession, isHost, isParticipant) {
           if (attempt < MAX_RETRIES) {
             const delay = Math.pow(2, attempt - 1) * 1000; // 1s, 2s, 4s
             toast.error(`Connection failed. Retrying in ${delay / 1000}s... (${attempt}/${MAX_RETRIES})`);
-            await new Promise((r) => setTimeout(r, delay));
+            await new Promise((r) => {
+              retryTimer = setTimeout(r, delay);
+            });
+            retryTimer = null;
             if (!cancelled) return initCall(attempt + 1);
           } else {
             setConnectionError("Failed to connect after multiple attempts. Please refresh the page.");
@@ -99,6 +103,7 @@ function useStreamClient(session, loadingSession, isHost, isParticipant) {
     // cleanup - performance reasons
     return () => {
       cancelled = true;
+      if (retryTimer) clearTimeout(retryTimer);
       // iife
       (async () => {
         try {

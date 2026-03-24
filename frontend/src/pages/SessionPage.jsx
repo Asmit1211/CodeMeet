@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import CodeEditorPanel from "../components/CodeEditorPanel";
 import OutputPanel from "../components/OutputPanel";
+import InterviewFeedbackModal from "../components/InterviewFeedbackModal";
 import toast from "react-hot-toast";
 
 import useStreamClient from "../hooks/useStreamClient";
@@ -33,6 +34,7 @@ function SessionPage() {
   const [isRunning, setIsRunning] = useState(false);
   const [roomPassword, setRoomPassword] = useState("");
   const [copiedField, setCopiedField] = useState(null);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 
   const { data: sessionData, isLoading: loadingSession, isError: sessionError, refetch } = useSessionById(id);
 
@@ -86,9 +88,7 @@ function SessionPage() {
   };
 
   const handleEndSession = () => {
-    if (confirm("Are you sure you want to end this session? All participants will be notified.")) {
-      endSessionMutation.mutate(id, { onSuccess: () => navigate("/dashboard") });
-    }
+    setShowFeedbackModal(true);
   };
 
   const handleJoinWithPassword = () => {
@@ -405,6 +405,17 @@ function SessionPage() {
           </Panel>
         </PanelGroup>
       </div>
+
+      {/* Interview Feedback Modal */}
+      <InterviewFeedbackModal
+        isOpen={showFeedbackModal}
+        onClose={() => setShowFeedbackModal(false)}
+        sessionId={id}
+        code={code}
+        call={call}
+        endSessionMutation={endSessionMutation}
+        navigate={navigate}
+      />
     </div>
   );
 }

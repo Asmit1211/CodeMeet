@@ -15,4 +15,6 @@ export const ENV = {
   // 👇 .trim() zaroor lagana taaki hidden spaces delete ho jayein
   CLERK_PUBLISHABLE_KEY: process.env.CLERK_PUBLISHABLE_KEY?.trim(),
   CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY?.trim(),
+  EMAIL_USER: process.env.EMAIL_USER,
+  EMAIL_PASS: process.env.EMAIL_PASS,
 };
